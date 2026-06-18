@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="cctv_nvr_list" model="ir.ui.view">
+        <field name="name">cctv.nvr.list</field>
+        <field name="model">cctv.nvr</field>
+        <field name="arch" type="xml">
+            <list string="NVR/DVR" multi_edit="1">
+                <field name="name" string="Name"/>
+                <field name="device_type" string="Type"/>
+                <field name="ip_address" string="IP Address" widget="cctv.ip_address_no_nav"/>
+                <field name="lokasi_ids" string="Locations" widget="many2many_tags"/>
+                <field name="asset_code" string="Asset Code" optional="hide"/>
+                <field name="brand" string="Brand" optional="hide"/>
+                <field name="model" string="Model" optional="hide"/>
+                <field name="serial_number" string="Serial No" optional="hide"/>
+                <field name="status" string="Status" decoration-danger="status == 'offline'"
+                    decoration-warning="status == 'maintenance'"
+                    decoration-success="status == 'active'"
+                    decoration-muted="status == 'retired'"/>
+                <field name="camera_count" string="Cameras"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="cctv_nvr_form" model="ir.ui.view">
+        <field name="name">cctv.nvr.form</field>
+        <field name="model">cctv.nvr</field>
+        <field name="arch" type="xml">
+            <form string="NVR/DVR">
+                <header>
+                    <field name="status" widget="statusbar"
+                        statusbar_visible="draft,active,maintenance,offline,retired"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_maintenance" type="object"
+                            class="oe_stat_button" icon="fa-wrench"
+                            context="{'default_nvr_id': id}">
+                            <field name="maintenance_count" string="Maintenance"
+                                widget="statinfo"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Device Name"/>
+                        </h1>
+                        <group>
+                            <field name="asset_code" placeholder="e.g. NVR-001"/>
+                        </group>
+                    </div>
+                    <notebook>
+                        <page string="General">
+                            <group>
+                                <group>
+                                    <field name="device_type"/>
+                                    <field name="status"/>
+                                    <field name="brand"/>
+                                    <field name="model"/>
+                                    <field name="serial_number"/>
+                                </group>
+                                <group>
+                                    <field name="ip_address"/>
+                                    <field name="port"/>
+                                    <field name="mac_address"/>
+                                    <field name="installation_date"/>
+                                    <field name="warranty_end_date"/>
+                                </group>
+                            </group>
+                            <group string="Location">
+                                <field name="lokasi_ids" widget="many2many_tags"/>
+                            </group>
+                            <group string="Notes">
+                                <field name="notes" nolabel="1" placeholder="Additional notes..."/>
+                            </group>
+                        </page>
+                        <page string="Storage &amp; Channels">
+                            <group>
+                                <group>
+                                    <field name="channel_count"/>
+                                    <field name="storage_capacity_tb"/>
+                                    <field name="used_storage_tb"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Streaming">
+                            <group>
+                                <group>
+                                    <field name="rtsp_url"/>
+                                    <field name="stream_url"/>
+                                    <field name="resolution"/>
+                                    <field name="frame_rate"/>
+                                    <field name="codec"/>
+                                    <field name="firmware_version"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Cameras">
+                            <field name="camera_ids">
+                                <list string="Cameras" editable="bottom">
+                                    <field name="name"/>
+                                    <field name="channel"/>
+                                    <field name="status"/>
+                                    <field name="ip_address"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Maintenance">
+                            <group>
+                                <group>
+                                    <field name="last_maintenance_date" readonly="1"/>
+                                </group>
+                            </group>
+                            <field name="maintenance_ids" context="{'default_nvr_id': id}">
+                                <list string="Maintenance History" editable="bottom">
+                                    <field name="name" readonly="1" optional="hide"/>
+                                    <field name="date"/>
+                                    <field name="type"/>
+                                    <field name="status"/>
+                                    <field name="priority" widget="priority" optional="hide"/>
+                                    <field name="technician_id"/>
+                                    <field name="duration_hours" optional="hide"/>
+                                    <field name="cost" optional="hide"/>
+                                    <field name="next_maintenance_date" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="cctv_nvr_search" model="ir.ui.view">
+        <field name="name">cctv.nvr.search</field>
+        <field name="model">cctv.nvr</field>
+        <field name="arch" type="xml">
+            <search string="Search NVR/DVR">
+                <field name="name"/>
+                <field name="asset_code"/>
+                <field name="ip_address"/>
+                <field name="serial_number"/>
+                <field name="brand"/>
+                <field name="model"/>
+                <field name="lokasi_ids"/>
+                <filter string="Draft" name="filter_draft"
+                    domain="[('status', '=', 'draft')]"/>
+                <filter string="Active" name="filter_active"
+                    domain="[('status', '=', 'active')]"/>
+                <filter string="Maintenance" name="filter_maintenance"
+                    domain="[('status', '=', 'maintenance')]"/>
+                <filter string="Offline" name="filter_offline"
+                    domain="[('status', '=', 'offline')]"/>
+                <filter string="Retired" name="filter_retired"
+                    domain="[('status', '=', 'retired')]"/>
+                <separator/>
+                <filter string="NVR" name="filter_nvr"
+                    domain="[('device_type', '=', 'nvr')]"/>
+                <filter string="DVR" name="filter_dvr"
+                    domain="[('device_type', '=', 'dvr')]"/>
+                <group name="group_by">
+                    <filter string="Status" name="group_status"
+                        context="{'group_by': 'status'}"/>
+                    <filter string="Device Type" name="group_device_type"
+                        context="{'group_by': 'device_type'}"/>
+                    <filter string="Brand" name="group_brand"
+                        context="{'group_by': 'brand'}"/>
+                    <filter string="Location" name="group_location"
+                        context="{'group_by': 'lokasi_ids'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_cctv_nvr" model="ir.actions.act_window">
+        <field name="name">NVR/DVR</field>
+        <field name="res_model">cctv.nvr</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="cctv_nvr_search"/>
+    </record>
+
+    <!-- Camera Action -->
+    <record id="action_cctv_camera" model="ir.actions.act_window">
+        <field name="name">Cameras</field>
+        <field name="res_model">cctv.camera</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Location Tag Action -->
+    <record id="action_cctv_location_tag" model="ir.actions.act_window">
+        <field name="name">Location Tags</field>
+        <field name="res_model">cctv.location.tag</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

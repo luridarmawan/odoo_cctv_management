@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Top Menu -->
+    <menuitem id="menu_cctv_root"
+        name="CCTV"
+        sequence="10"
+        web_icon="cctv_management,static/description/icon.png"/>
+
+    <!-- NVR/DVR Menu -->
+    <menuitem id="menu_cctv_nvr"
+        name="NVR/DVR"
+        parent="menu_cctv_root"
+        action="action_cctv_nvr"
+        sequence="10"/>
+
+    <!-- Cameras Menu (future) -->
+    <menuitem id="menu_cctv_camera"
+        name="Cameras"
+        parent="menu_cctv_root"
+        action="action_cctv_camera"
+        sequence="20"/>
+
+    <!-- Maintenance Menu -->
+    <menuitem id="menu_cctv_nvr_maintenance"
+        name="Maintenance History"
+        parent="menu_cctv_root"
+        action="action_cctv_nvr_maintenance"
+        sequence="30"/>
+
+    <!-- Configuration Menu -->
+    <menuitem id="menu_cctv_configuration"
+        name="Configuration"
+        parent="menu_cctv_root"
+        sequence="90"/>
+
+    <menuitem id="menu_cctv_location_tag"
+        name="Location Tags"
+        parent="menu_cctv_configuration"
+        action="action_cctv_location_tag"
+        sequence="10"/>
+</odoo>
