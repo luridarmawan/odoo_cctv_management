@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="cctv_nvr_maintenance_list" model="ir.ui.view">
+        <field name="name">cctv.nvr.maintenance.list</field>
+        <field name="model">cctv.nvr.maintenance</field>
+        <field name="arch" type="xml">
+            <list string="Maintenance History" multi_edit="1">
+                <field name="name" string="Reference"/>
+                <field name="date" string="Date"/>
+                <field name="nvr_id" string="NVR/DVR"/>
+                <field name="type" string="Type"
+                    decoration-info="type == 'inspection'"
+                    decoration-warning="type in ('corrective', 'hardware_replacement')"
+                    decoration-success="type in ('preventive', 'cleaning')"/>
+                <field name="status" string="Status"
+                    decoration-info="status == 'scheduled'"
+                    decoration-warning="status == 'in_progress'"
+                    decoration-success="status == 'done'"
+                    decoration-muted="status == 'cancelled'"/>
+                <field name="priority" string="Priority" optional="hide"
+                    widget="priority"/>
+                <field name="technician_id" string="Technician" optional="show"/>
+                <field name="duration_hours" string="Duration (h)" optional="hide"/>
+                <field name="cost" string="Cost" optional="hide"/>
+                <field name="next_maintenance_date" string="Next Date" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="cctv_nvr_maintenance_form" model="ir.ui.view">
+        <field name="name">cctv.nvr.maintenance.form</field>
+        <field name="model">cctv.nvr.maintenance</field>
+        <field name="arch" type="xml">
+            <form string="Maintenance">
+                <header>
+                    <field name="status" widget="statusbar"
+                        statusbar_visible="scheduled,in_progress,done,cancelled"/>
+                    <button name="action_set_in_progress" string="Start"
+                        type="object" class="btn-primary"
+                        invisible="status != 'scheduled'"/>
+                    <button name="action_mark_done" string="Mark Done"
+                        type="object" class="btn-primary"
+                        invisible="status not in ('scheduled', 'in_progress')"/>
+                    <button name="action_mark_cancelled" string="Cancel"
+                        type="object"
+                        invisible="status not in ('scheduled', 'in_progress')"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="nvr_id"/>
+                            <field name="device_type" readonly="1"/>
+                            <field name="date"/>
+                            <field name="type"/>
+                            <field name="status"/>
+                            <field name="priority" widget="priority"/>
+                        </group>
+                        <group>
+                            <field name="technician_id"/>
+                            <field name="duration_hours" widget="float_time"/>
+                            <field name="cost" widget="monetary"
+                                options="{'currency_field': 'currency_id'}"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="downtime_minutes"/>
+                            <field name="next_maintenance_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description" nolabel="1"
+                                placeholder="Describe the issue, action taken, and outcome..."/>
+                        </page>
+                        <page string="Parts Replaced">
+                            <field name="parts_replaced" nolabel="1"
+                                placeholder="List of parts/components replaced..."/>
+                        </page>
+                        <page string="Result / Resolution">
+                            <field name="result" nolabel="1"
+                                placeholder="Outcome and follow-up actions..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="cctv_nvr_maintenance_search" model="ir.ui.view">
+        <field name="name">cctv.nvr.maintenance.search</field>
+        <field name="model">cctv.nvr.maintenance</field>
+        <field name="arch" type="xml">
+            <search string="Search Maintenance">
+                <field name="name"/>
+                <field name="nvr_id"/>
+                <field name="technician_id"/>
+                <field name="date"/>
+                <field name="type"/>
+                <field name="status"/>
+                <filter string="Scheduled" name="filter_scheduled"
+                    domain="[('status', '=', 'scheduled')]"/>
+                <filter string="In Progress" name="filter_in_progress"
+                    domain="[('status', '=', 'in_progress')]"/>
+                <filter string="Done" name="filter_done"
+                    domain="[('status', '=', 'done')]"/>
+                <filter string="Cancelled" name="filter_cancelled"
+                    domain="[('status', '=', 'cancelled')]"/>
+                <separator/>
+                <filter string="Preventive" name="filter_preventive"
+                    domain="[('type', '=', 'preventive')]"/>
+                <filter string="Corrective" name="filter_corrective"
+                    domain="[('type', '=', 'corrective')]"/>
+                <filter string="Inspection" name="filter_inspection"
+                    domain="[('type', '=', 'inspection')]"/>
+                <filter string="Firmware Update" name="filter_firmware"
+                    domain="[('type', '=', 'firmware_update')]"/>
+                <filter string="Hardware Replacement" name="filter_hardware"
+                    domain="[('type', '=', 'hardware_replacement')]"/>
+                <group name="group_by">
+                    <filter string="NVR/DVR" name="group_nvr"
+                        context="{'group_by': 'nvr_id'}"/>
+                    <filter string="Type" name="group_type"
+                        context="{'group_by': 'type'}"/>
+                    <filter string="Status" name="group_status"
+                        context="{'group_by': 'status'}"/>
+                    <filter string="Technician" name="group_technician"
+                        context="{'group_by': 'technician_id'}"/>
+                    <filter string="Date" name="group_date"
+                        context="{'group_by': 'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_cctv_nvr_maintenance" model="ir.actions.act_window">
+        <field name="name">Maintenance History</field>
+        <field name="res_model">cctv.nvr.maintenance</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="cctv_nvr_maintenance_search"/>
+        <field name="context">{'search_default_filter_done': 1}</field>
+    </record>
+</odoo>

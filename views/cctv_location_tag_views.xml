@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="cctv_location_tag_tree" model="ir.ui.view">
+        <field name="name">cctv.location.tag.tree</field>
+        <field name="model">cctv.location.tag</field>
+        <field name="arch" type="xml">
+            <list string="Location Tags">
+                <field name="name"/>
+                <field name="parent_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="cctv_location_tag_form" model="ir.ui.view">
+        <field name="name">cctv.location.tag.form</field>
+        <field name="model">cctv.location.tag</field>
+        <field name="arch" type="xml">
+            <form string="Location Tag">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="parent_id"/>
+                        <field name="color" widget="color_picker"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="cctv_location_tag_search" model="ir.ui.view">
+        <field name="name">cctv.location.tag.search</field>
+        <field name="model">cctv.location.tag</field>
+        <field name="arch" type="xml">
+            <search string="Search Location Tags">
+                <field name="name"/>
+                <field name="parent_id"/>
+            </search>
+        </field>
+    </record>
+</odoo>
