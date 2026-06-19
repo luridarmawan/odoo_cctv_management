@@ -84,7 +84,9 @@
                             <group string="Location">
                                 <field name="lokasi_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                             </group>
-                            <group string="Notes">
+                        </page>
+                        <page string="Notes">
+                            <group>
                                 <field name="notes" nolabel="1" placeholder="Additional notes..."/>
                             </group>
                         </page>
