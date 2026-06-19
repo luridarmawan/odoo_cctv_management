@@ -47,6 +47,11 @@ class CctvNvr(models.Model):
     )
     brand = fields.Char(string="Brand")
     model = fields.Char(string="Model")
+    device_domain = fields.Char(
+        string="Device Domain",
+        help="Device domain, hostname, or management URL (e.g. nvr.example.com "
+             "or https://nvr.example.com)",
+    )
     serial_number = fields.Char(string="Serial Number", copy=False)
     ip_address = fields.Char(
         string="IP Address",
