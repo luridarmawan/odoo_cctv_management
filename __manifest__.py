@@ -1,6 +1,6 @@
 {
     "name": "CCTV Management",
-    "version": "19.0.1.1.0",
+    "version": "19.0.1.2.0",
     "summary": "Manage CCTV infrastructure (NVR/DVR, cameras)",
     "description": """
         CCTV Management Module for Odoo 19.

@@ -9,6 +9,9 @@
                 <field name="name" string="Name"/>
                 <field name="device_type" string="Type"/>
                 <field name="ip_address" string="IP Address" widget="cctv.ip_address_no_nav"/>
+                <field name="ip_address_public" string="Public IP" optional="show"
+                    widget="cctv.ip_address_no_nav"/>
+                <field name="port_public" string="Public Port" optional="show"/>
                 <field name="lokasi_ids" string="Locations" widget="many2many_tags"/>
                 <field name="asset_code" string="Asset Code" optional="hide"/>
                 <field name="brand" string="Brand" optional="hide"/>
@@ -61,11 +64,20 @@
                                     <field name="serial_number"/>
                                 </group>
                                 <group>
-                                    <field name="ip_address"/>
+                                    <field name="ip_address" widget="cctv.ip_address_no_nav"/>
                                     <field name="port"/>
                                     <field name="mac_address"/>
                                     <field name="installation_date"/>
                                     <field name="warranty_end_date"/>
+                                </group>
+                            </group>
+                            <group string="Public Access"
+                                help="Fill these if this device is reachable from outside the office network.">
+                                <group>
+                                    <field name="ip_address_public"
+                                        placeholder="e.g. 203.0.113.10 or mynvr.ddns.org"
+                                        widget="cctv.ip_address_no_nav"/>
+                                    <field name="port_public" placeholder="e.g. 8080"/>
                                 </group>
                             </group>
                             <group string="Location">
@@ -141,10 +153,13 @@
                 <field name="name"/>
                 <field name="asset_code"/>
                 <field name="ip_address"/>
+                <field name="ip_address_public"/>
                 <field name="serial_number"/>
                 <field name="brand"/>
                 <field name="model"/>
                 <field name="lokasi_ids"/>
+                <filter string="Publicly Accessible" name="filter_public_access"
+                    domain="[('ip_address_public', '!=', False)]"/>
                 <filter string="Draft" name="filter_draft"
                     domain="[('status', '=', 'draft')]"/>
                 <filter string="Active" name="filter_active"

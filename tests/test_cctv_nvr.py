@@ -116,3 +116,73 @@ class TestCctvNvr(TransactionCase):
         )
         nvr.write({"status": "active"})
         self.assertEqual(nvr.status, "active")
+
+    def test_public_access_valid(self):
+        nvr = self.Nvr.create(
+            {
+                "name": "NVR Public",
+                "asset_code": "NVR-PUB-TEST",
+                "device_type": "nvr",
+                "ip_address_public": "203.0.113.10",
+                "port_public": 8080,
+            }
+        )
+        self.assertEqual(nvr.ip_address_public, "203.0.113.10")
+        self.assertEqual(nvr.port_public, 8080)
+
+    def test_public_access_optional(self):
+        nvr = self.Nvr.create(
+            {
+                "name": "NVR Internal",
+                "asset_code": "NVR-INT-TEST",
+                "device_type": "nvr",
+            }
+        )
+        self.assertFalse(nvr.ip_address_public)
+        self.assertFalse(nvr.port_public)
+
+    def test_invalid_ip_address_public(self):
+        with self.assertRaises(ValidationError):
+            self.Nvr.create(
+                {
+                    "name": "NVR Bad Public",
+                    "asset_code": "NVR-BADPUB-TEST",
+                    "device_type": "nvr",
+                    "ip_address_public": "not-an-ip",
+                    "port_public": 8080,
+                }
+            )
+
+    def test_invalid_port_public_range(self):
+        with self.assertRaises(ValidationError):
+            self.Nvr.create(
+                {
+                    "name": "NVR Bad Port",
+                    "asset_code": "NVR-BADPRT-TEST",
+                    "device_type": "nvr",
+                    "ip_address_public": "203.0.113.10",
+                    "port_public": 70000,
+                }
+            )
+
+    def test_public_access_partial_ip_only(self):
+        with self.assertRaises(ValidationError):
+            self.Nvr.create(
+                {
+                    "name": "NVR Partial 1",
+                    "asset_code": "NVR-PRT1-TEST",
+                    "device_type": "nvr",
+                    "ip_address_public": "203.0.113.10",
+                }
+            )
+
+    def test_public_access_partial_port_only(self):
+        with self.assertRaises(ValidationError):
+            self.Nvr.create(
+                {
+                    "name": "NVR Partial 2",
+                    "asset_code": "NVR-PRT2-TEST",
+                    "device_type": "nvr",
+                    "port_public": 8080,
+                }
+            )

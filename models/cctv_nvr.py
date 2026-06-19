@@ -50,11 +50,22 @@ class CctvNvr(models.Model):
     serial_number = fields.Char(string="Serial Number", copy=False)
     ip_address = fields.Char(
         string="IP Address",
-        help="IP address of the NVR/DVR device on the network",
+        help="Internal/LAN IP address of the NVR/DVR device",
     )
     port = fields.Char(
         string="Port",
-        help="Network port used to access the device (e.g. 80, 8080, 554)",
+        help="Network port used to access the device on the internal network "
+             "(e.g. 80, 8080, 554)",
+    )
+    ip_address_public = fields.Char(
+        string="Public IP / Hostname",
+        help="Public IP address or DDNS hostname used to access this device "
+             "from outside the office network",
+    )
+    port_public = fields.Integer(
+        string="Public Port",
+        help="Public-facing port (1-65535) exposed on the firewall/router for "
+             "remote access to this device",
     )
     mac_address = fields.Char(string="MAC Address")
     installation_date = fields.Date(string="Installation Date")
@@ -162,6 +173,37 @@ class CctvNvr(models.Model):
                     raise ValidationError(
                         _("IP Address must be a valid IPv4 format (e.g. 192.168.1.1)")
                     )
+
+    @api.constrains("ip_address_public")
+    def _check_ip_address_public(self):
+        for record in self:
+            if record.ip_address_public:
+                if record.ip_address_public.count(".") != 3:
+                    raise ValidationError(
+                        _(
+                            "Public IP/Hostname must be a valid IPv4 format "
+                            "(e.g. 203.0.113.10)"
+                        )
+                    )
+
+    @api.constrains("port_public")
+    def _check_port_public(self):
+        for record in self:
+            if record.port_public and not (1 <= record.port_public <= 65535):
+                raise ValidationError(
+                    _("Public Port must be between 1 and 65535.")
+                )
+
+    @api.constrains("ip_address_public", "port_public")
+    def _check_public_access_consistency(self):
+        for record in self:
+            if bool(record.ip_address_public) ^ bool(record.port_public):
+                raise ValidationError(
+                    _(
+                        "Public IP/Hostname and Public Port must be filled together. "
+                        "Leave both blank if the device is not publicly accessible."
+                    )
+                )
 
     @api.constrains("storage_capacity_tb", "used_storage_tb")
     def _check_storage(self):
