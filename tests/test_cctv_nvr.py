@@ -124,11 +124,11 @@ class TestCctvNvr(TransactionCase):
                 "asset_code": "NVR-PUB-TEST",
                 "device_type": "nvr",
                 "ip_address_public": "203.0.113.10",
-                "port_public": 8080,
+                "port_public": "8080",
             }
         )
         self.assertEqual(nvr.ip_address_public, "203.0.113.10")
-        self.assertEqual(nvr.port_public, 8080)
+        self.assertEqual(nvr.port_public, "8080")
 
     def test_public_access_optional(self):
         nvr = self.Nvr.create(
@@ -139,7 +139,8 @@ class TestCctvNvr(TransactionCase):
             }
         )
         self.assertFalse(nvr.ip_address_public)
-        self.assertFalse(nvr.port_public)
+        self.assertEqual(nvr.port_public, False)
+        self.assertNotEqual(nvr.port_public, 0)
 
     def test_invalid_ip_address_public(self):
         with self.assertRaises(ValidationError):
@@ -149,7 +150,7 @@ class TestCctvNvr(TransactionCase):
                     "asset_code": "NVR-BADPUB-TEST",
                     "device_type": "nvr",
                     "ip_address_public": "not-an-ip",
-                    "port_public": 8080,
+                    "port_public": "8080",
                 }
             )
 
@@ -161,7 +162,19 @@ class TestCctvNvr(TransactionCase):
                     "asset_code": "NVR-BADPRT-TEST",
                     "device_type": "nvr",
                     "ip_address_public": "203.0.113.10",
-                    "port_public": 70000,
+                    "port_public": "70000",
+                }
+            )
+
+    def test_invalid_port_public_non_numeric(self):
+        with self.assertRaises(ValidationError):
+            self.Nvr.create(
+                {
+                    "name": "NVR Bad Port Type",
+                    "asset_code": "NVR-BADPRT2-TEST",
+                    "device_type": "nvr",
+                    "ip_address_public": "203.0.113.10",
+                    "port_public": "abc",
                 }
             )
 
@@ -183,6 +196,6 @@ class TestCctvNvr(TransactionCase):
                     "name": "NVR Partial 2",
                     "asset_code": "NVR-PRT2-TEST",
                     "device_type": "nvr",
-                    "port_public": 8080,
+                    "port_public": "8080",
                 }
             )

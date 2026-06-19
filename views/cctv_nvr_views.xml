@@ -64,7 +64,7 @@
                                     <field name="serial_number"/>
                                 </group>
                                 <group>
-                                    <field name="ip_address" widget="cctv.ip_address_no_nav"/>
+                                    <field name="ip_address"/>
                                     <field name="port"/>
                                     <field name="mac_address"/>
                                     <field name="installation_date"/>
@@ -75,8 +75,7 @@
                                 help="Fill these if this device is reachable from outside the office network.">
                                 <group>
                                     <field name="ip_address_public"
-                                        placeholder="e.g. 203.0.113.10 or mynvr.ddns.org"
-                                        widget="cctv.ip_address_no_nav"/>
+                                        placeholder="e.g. 203.0.113.10 or mynvr.ddns.org"/>
                                     <field name="port_public" placeholder="e.g. 8080"/>
                                 </group>
                             </group>

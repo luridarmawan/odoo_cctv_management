@@ -62,10 +62,10 @@ class CctvNvr(models.Model):
         help="Public IP address or DDNS hostname used to access this device "
              "from outside the office network",
     )
-    port_public = fields.Integer(
+    port_public = fields.Char(
         string="Public Port",
-        help="Public-facing port (1-65535) exposed on the firewall/router for "
-             "remote access to this device",
+        help="Public-facing port exposed on the firewall/router for remote "
+             "access to this device (1-65535). Leave blank if not used.",
     )
     mac_address = fields.Char(string="MAC Address")
     installation_date = fields.Date(string="Installation Date")
@@ -189,10 +189,16 @@ class CctvNvr(models.Model):
     @api.constrains("port_public")
     def _check_port_public(self):
         for record in self:
-            if record.port_public and not (1 <= record.port_public <= 65535):
-                raise ValidationError(
-                    _("Public Port must be between 1 and 65535.")
-                )
+            if record.port_public:
+                if not record.port_public.isdigit():
+                    raise ValidationError(
+                        _("Public Port must be a numeric value between 1 and 65535.")
+                    )
+                port_value = int(record.port_public)
+                if not (1 <= port_value <= 65535):
+                    raise ValidationError(
+                        _("Public Port must be between 1 and 65535.")
+                    )
 
     @api.constrains("ip_address_public", "port_public")
     def _check_public_access_consistency(self):
