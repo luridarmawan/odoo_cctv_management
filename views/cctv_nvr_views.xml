@@ -68,6 +68,7 @@
                                 <group>
                                     <field name="ip_address"/>
                                     <field name="port"/>
+                                    <field name="access_url" widget="url"/>
                                     <field name="mac_address"/>
                                     <field name="installation_date"/>
                                     <field name="warranty_end_date"/>
@@ -79,6 +80,7 @@
                                     <field name="ip_address_public"
                                         placeholder="e.g. 203.0.113.10 or mynvr.ddns.org"/>
                                     <field name="port_public" placeholder="e.g. 8080"/>
+                                    <field name="access_url_public" widget="url"/>
                                 </group>
                             </group>
                             <group string="Location">

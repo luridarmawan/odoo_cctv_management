@@ -87,6 +87,16 @@ class CctvNvr(models.Model):
         string="Used Storage (TB)",
         help="Currently used storage in Terabytes",
     )
+    access_url = fields.Char(
+        string="Access URL",
+        compute="_compute_access_url",
+        help="Click to access the device via browser (http://ip:port)",
+    )
+    access_url_public = fields.Char(
+        string="Public Access URL",
+        compute="_compute_access_url_public",
+        help="Click to access the device publicly via browser (http://ip:port)",
+    )
     firmware_version = fields.Char(string="Firmware Version")
     lokasi_ids = fields.Many2many(
         comodel_name="cctv.location.tag",
@@ -140,6 +150,28 @@ class CctvNvr(models.Model):
     def _compute_camera_count(self):
         for record in self:
             record.camera_count = len(record.camera_ids)
+
+    @api.depends("ip_address", "port")
+    def _compute_access_url(self):
+        for record in self:
+            if record.ip_address:
+                url = f"http://{record.ip_address}"
+                if record.port:
+                    url += f":{record.port}"
+                record.access_url = url
+            else:
+                record.access_url = False
+
+    @api.depends("ip_address_public", "port_public")
+    def _compute_access_url_public(self):
+        for record in self:
+            if record.ip_address_public:
+                url = f"http://{record.ip_address_public}"
+                if record.port_public:
+                    url += f":{record.port_public}"
+                record.access_url_public = url
+            else:
+                record.access_url_public = False
 
     @api.depends("maintenance_ids")
     def _compute_maintenance_count(self):
@@ -204,17 +236,6 @@ class CctvNvr(models.Model):
                     raise ValidationError(
                         _("Public Port must be between 1 and 65535.")
                     )
-
-    @api.constrains("ip_address_public", "port_public")
-    def _check_public_access_consistency(self):
-        for record in self:
-            if bool(record.ip_address_public) ^ bool(record.port_public):
-                raise ValidationError(
-                    _(
-                        "Public IP/Hostname and Public Port must be filled together. "
-                        "Leave both blank if the device is not publicly accessible."
-                    )
-                )
 
     @api.constrains("storage_capacity_tb", "used_storage_tb")
     def _check_storage(self):
