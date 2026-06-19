@@ -151,7 +151,8 @@
         <field name="model">cctv.nvr</field>
         <field name="arch" type="xml">
             <search string="Search NVR/DVR">
-                <field name="name"/>
+                <field name="name"
+                    filter_domain="['|', ('name', 'ilike', self), ('lokasi_ids.name', 'ilike', self)]"/>
                 <field name="asset_code"/>
                 <field name="ip_address"/>
                 <field name="ip_address_public"/>
