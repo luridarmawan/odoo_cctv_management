@@ -12,7 +12,7 @@
                 <field name="ip_address_public" string="Public IP" optional="show"
                     widget="cctv.ip_address_no_nav"/>
                 <field name="port_public" string="Public Port" optional="show"/>
-                <field name="lokasi_ids" string="Locations" widget="many2many_tags"/>
+                <field name="lokasi_ids" string="Locations" widget="many2many_tags" options="{'color_field': 'color'}"/>
                 <field name="asset_code" string="Asset Code" optional="hide"/>
                 <field name="brand" string="Brand" optional="hide"/>
                 <field name="model" string="Model" optional="hide"/>
@@ -82,7 +82,7 @@
                                 </group>
                             </group>
                             <group string="Location">
-                                <field name="lokasi_ids" widget="many2many_tags"/>
+                                <field name="lokasi_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                             </group>
                             <group string="Notes">
                                 <field name="notes" nolabel="1" placeholder="Additional notes..."/>
