@@ -1,4 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cctv_nvr_monitor,cctv.nvr.monitor,model_cctv_nvr,cctv_management.cctv_monitor_group,1,0,0,0
+access_cctv_camera_monitor,cctv.camera.monitor,model_cctv_camera,cctv_management.cctv_monitor_group,1,0,0,0
 access_cctv_nvr_user,cctv.nvr.user,model_cctv_nvr,cctv_management.cctv_user_group,1,0,0,0
 access_cctv_nvr_supervisor,cctv.nvr.supervisor,model_cctv_nvr,cctv_management.cctv_supervisor_group,1,1,1,0
 access_cctv_nvr_admin,cctv.nvr.admin,model_cctv_nvr,cctv_management.cctv_administrator_group,1,1,1,1

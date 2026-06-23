@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
+        <!-- CCTV Monitor (read-only: NVR/DVR & Camera only) -->
+        <record id="cctv_monitor_group" model="res.groups">
+            <field name="name">CCTV Monitor</field>
+            <field name="comment">Read-only access to NVR/DVR and Camera data. Cannot create, edit, or delete any record.</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
         <!-- CCTV User -->
         <record id="cctv_user_group" model="res.groups">
             <field name="name">CCTV User</field>
