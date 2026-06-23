@@ -27,7 +27,7 @@
         </record>
         <!-- Auto-assign Administrator to CCTV Administrator group -->
         <record id="base.user_admin" model="res.users">
-            <field name="groups_id" eval="[(4, ref('cctv_management.cctv_administrator_group'))]"/>
+            <field name="group_ids" eval="[(4, ref('cctv_management.cctv_administrator_group'))]"/>
         </record>
     </data>
 </odoo>
