@@ -156,7 +156,7 @@ class CctvNvr(models.Model):
         for record in self:
             if record.ip_address:
                 url = f"http://{record.ip_address}"
-                if record.port:
+                if record.port and record.port not in ('80', '0'):
                     url += f":{record.port}"
                 record.access_url = url
             else:
@@ -167,7 +167,7 @@ class CctvNvr(models.Model):
         for record in self:
             if record.ip_address_public:
                 url = f"http://{record.ip_address_public}"
-                if record.port_public:
+                if record.port_public and record.port_public not in ('80', '0'):
                     url += f":{record.port_public}"
                 record.access_url_public = url
             else:
